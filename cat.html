@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《找个儿喵》分享奖励系统 - 技术规格书</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --secondary: #f1f8e9;
+            --text: #202124;
+            --text-light: #5f6368;
+            --border: #c8e6c9;
+            --success: #43a047;
+            --warning: #f9a825;
+            --sidebar-width: 280px;
+            --content-max: 900px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text);
+            line-height: 1.7;
+            background: #fff;
+        }
+
+        /* 顶部导航 */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .topbar h1 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .topbar-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .topbar-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - 60px);
+            background: var(--secondary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            padding: 8px 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(46, 125, 50, 0.08);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: rgba(46, 125, 50, 0.12);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item-icon {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        /* 主内容区 */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 100px 40px 60px;
+            min-height: 100vh;
+        }
+
+        .content {
+            max-width: var(--content-max);
+            margin: 0 auto;
+        }
+
+        /* 封面 */
+        .cover {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 16px;
+            margin-bottom: 60px;
+        }
+
+        .cover-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .cover h1 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #2e7d32;
+        }
+
+        .cover-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .cover-meta {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .cover-meta-item {
+            text-align: center;
+        }
+
+        .cover-meta-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .cover-meta-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 章节 */
+        .section {
+            margin-bottom: 60px;
+            scroll-margin-top: 80px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-number {
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-right: 16px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* 内容块 */
+        .block {
+            background: var(--secondary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .block-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .block-title-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .block.highlight {
+            background: linear-gradient(135deg, #e8f5e9 0%, #dcedc8 100%);
+            border: 1px solid #c5e1a5;
+        }
+
+        .block.warning {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border: 1px solid #ffe082;
+        }
+
+        /* 列表 */
+        .list {
+            list-style: none;
+        }
+
+        .list li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .list.sub li::before {
+            content: "‣";
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .list.sub {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .list.sub li {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* 方案卡片 */
+        .scheme-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 32px;
+            transition: all 0.3s;
+        }
+
+        .scheme-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 30px rgba(46, 125, 50, 0.15);
+        }
+
+        .scheme-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .scheme-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 16px;
+        }
+
+        .scheme-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .scheme-body {
+            padding: 24px;
+        }
+
+        .scheme-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .scheme-image {
+            background: var(--secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .scheme-image img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .scheme-image figcaption {
+            padding: 12px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* 表格 */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--secondary);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover td {
+            background: rgba(46, 125, 50, 0.04);
+        }
+
+        /* 标签 */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tag.primary { background: #e8f5e9; color: var(--primary); }
+        .tag.success { background: #c8e6c9; color: var(--primary-dark); }
+        .tag.warning { background: #fff8e1; color: #f57f17; }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+            .main {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar h1 {
+                font-size: 14px;
+            }
+            .main {
+                padding: 80px 20px 40px;
+            }
+            .cover {
+                padding: 40px 24px;
+            }
+            .cover h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            .topbar, .sidebar, .topbar-actions {
+                display: none !important;
+            }
+            .main {
+                margin-left: 0;
+                padding-top: 20px;
+            }
+            .scheme-card {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="topbar">
+        <h1>🐱 《找个儿喵》分享奖励系统技术规格书</h1>
+        <div class="topbar-actions">
+            <button class="topbar-btn" onclick="window.print()">🖨️ 打印 / 导出PDF</button>
+            <button class="topbar-btn" onclick="toggleTheme()">🌓 深色模式</button>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <nav class="sidebar">
+        <div class="nav-section">
+            <div class="nav-section-title">文档信息</div>
+            <a href="#cover" class="nav-item active">
+                <span class="nav-item-icon">📄</span>
+                文档概览
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">功能需求</div>
+            <a href="#section1" class="nav-item">
+                <span class="nav-item-icon">📌</span>
+                1. 追加理由
+            </a>
+            <a href="#section2" class="nav-item">
+                <span class="nav-item-icon">🎯</span>
+                2. 方案一
+            </a>
+            <a href="#section3" class="nav-item">
+                <span class="nav-item-icon">🎯</span>
+                3. 方案二
+            </a>
+            <a href="#section4" class="nav-item">
+                <span class="nav-item-icon">📋</span>
+                4. 应用建议
+            </a>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <div class="content">
+            <!-- 封面 -->
+            <section id="cover" class="cover section">
+                <div class="cover-badge">KakaoPay 版本</div>
+                <h1>《找个儿喵》分享奖励系统<br>追加技术规格书</h1>
+                <p class="cover-subtitle">游戏内新增分享奖励功能 | 用户增长策略文档</p>
+                <div class="cover-meta">
+                    <div class="cover-meta-item">
+                        <div class="cover-meta-label">文档版本</div>
+                        <div class="cover-meta-value">V1.0</div>
+                    </div>
+                    <div class="cover-meta-item">
+                        <div class="cover-meta-label">编制日期</div>
+                        <div class="cover-meta-value">2026年3月</div>
+                    </div>
+                    <div class="cover-meta-item">
+                        <div class="cover-meta-label">目标渠道</div>
+                        <div class="cover-meta-value">KakaoPay</div>
+                    </div>
+                    <div class="cover-meta-item">
+                        <div class="cover-meta-label">文档类型</div>
+                        <div class="cover-meta-value">功能需求规格书</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1. 分享奖励追加理由 -->
+            <section id="section1" class="section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div>
+                        <h2 class="section-title">分享奖励追加理由</h2>
+                        <p class="section-subtitle">项目背景与目标</p>
+                    </div>
+                </div>
+
+                <div class="block highlight">
+                    <div class="block-title">
+                        <span class="block-title-icon">📊</span>
+                        现状分析
+                    </div>
+                    <ul class="list">
+                        <li>KakaoPay版本的游戏指标和用户反馈表现良好，但仍需要增加新用户导入</li>
+                        <li>由于目前没有IAP（付费商品），仅有IAA（广告收入）模式，因此新用户导入显得尤为重要</li>
+                        <li>作为增加新用户的策略之一，建议在游戏中追加"分享奖励"系统</li>
+                    </ul>
+                    <ul class="list sub">
+                        <li>玩家可通过游戏内分享功能邀请好友，成功分享后获得游戏奖励</li>
+                    </ul>
+                </div>
+
+                <div class="block">
+                    <div class="block-title">
+                        <span class="block-title-icon">🎯</span>
+                        项目目标
+                    </div>
+                    <ul class="list">
+                        <li>提升游戏新用户导入量</li>
+                        <li>通过社交分享机制实现用户自增长</li>
+                        <li>复用现有微信版本资源，最小化开发工作量</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 2. 方案一 -->
+            <section id="section2" class="section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div>
+                        <h2 class="section-title">方案一：主屏幕添加分享按钮</h2>
+                        <p class="section-subtitle">方案一详细说明</p>
+                    </div>
+                </div>
+
+                <div class="scheme-card">
+                    <div class="scheme-header">
+                        <span class="scheme-badge">方案 A</span>
+                        <span class="scheme-title">主屏幕分享按钮</span>
+                    </div>
+                    <div class="scheme-body">
+                        <div class="block">
+                            <div class="block-title">
+                                <span class="block-title-icon">📝</span>
+                                功能描述
+                          </div> 
+    <ul class="list">
+        <li>将目前微信版本使用的分享按钮，添加到KakaoPay版本的游戏主界面中</li>
+        <li>
+            分享成功时获得爆炸道具1个 (X1) 
+            <img src="https://s6z1.com/shane/i/26/qv6l8.png" style="height: 20px; vertical-align: middle; margin-left: 5px;" alt="爆炸道具"/>
+        </li>
+    </ul>
+</div>
+
+                        <div class="block">
+                            <div class="block-title">
+                                <span class="block-title-icon">⚡</span>
+                                奖励规则
+                            </div>
+                            <ul class="list">
+                                <li>每日可获取3次分享奖励</li>
+                            </ul>
+                            <ul class="list sub">
+                                <li>按钮上显示剩余次数</li>
+                                <li>次数用完后按钮将被禁用</li>
+                                <li>每日韩国时间午夜0点重置次数，按钮恢复启用</li>
+                            </ul>
+                        </div>
+
+                        <div class="scheme-images">
+                            <figure class="scheme-image">
+                                <img src="https://s6z1.com/shane/i/26/2qkr.png" />
+                                <figcaption>主屏幕分享按钮位置示意</figcaption>
+                            </figure>
+                            <figure class="scheme-image">
+                                <img src="https://s6z1.com/shane/i/26/3q629.png" />
+                                <figcaption>三次分享后按钮不可点击</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 方案二 -->
+            <section id="section3" class="section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div>
+                        <h2 class="section-title">方案二：道具首次使用时广告替换为分享</h2>
+                        <p class="section-subtitle">方案二详细说明</p>
+                    </div>
+                </div>
+
+                <div class="scheme-card">
+                    <div class="scheme-header" style="background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);">
+                        <span class="scheme-badge">方案 B</span>
+                        <span class="scheme-title">道具使用 - 广告替换为分享</span>
+                    </div>
+                    <div class="scheme-body">
+                        <div class="block">
+                            <div class="block-title">
+                                <span class="block-title-icon">📝</span>
+                                功能描述
+                            </div>
+                            <ul class="list">
+                                <li>在关卡进行中使用道具时，该日首次使用将广告替换为分享</li>
+                            </ul>
+                            <ul class="list sub">
+                                <li>显示分享图标替代广告图标</li>
+                            </ul>
+                            <ul class="list">
+                                <li>该日首次使用后，再次使用时恢复为普通广告</li>
+                            </ul>
+                            <ul class="list sub">
+                                <li>每日韩国时间午夜0点重置分享功能</li>
+                            </ul>
+                        </div>
+
+                        <div class="scheme-images">
+                            <figure class="scheme-image">
+                                <img src="https://s6z1.com/shane/i/26/2qkv.png" />
+                                <figcaption>首次分享后获得道具提示</figcaption>
+                            </figure>
+                            <figure class="scheme-image">
+                                <img src="https://s6z1.com/shane/i/26/j625.png" />
+                                <figcaption>首次分享后恢复看广告</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. 应用建议 -->
+            <section id="section4" class="section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div>
+                        <h2 class="section-title">分享奖励系统应用建议</h2>
+                        <p class="section-subtitle">实施优先级与建议</p>
+                    </div>
+                </div>
+
+                <div class="block warning">
+                    <div class="block-title">
+                        <span class="block-title-icon">⚡</span>
+                        实施建议
+                    </div>
+                    <ul class="list">
+                        <li><strong>建议同时实施方案一和方案二</strong>，以最大化用户触达和分享转化</li>
+                    </ul>
+                </div>
+
+
+
+            <!-- 页脚 -->
+            <footer style="text-align: center; padding: 40px 0; color: var(--text-light); font-size: 13px; border-top: 1px solid var(--border); margin-top: 60px;">
+                <p>📄 《找个儿喵》分享奖励系统技术规格书 | KakaoPay版本</p>
+                <p style="margin-top: 8px;">文档版本 V1.0 | 2026年3月</p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // 滚动时更新侧边栏高亮
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // 深色模式切换
+        let isDark = false;
+        function toggleTheme() {
+            isDark = !isDark;
+            document.body.style.background = isDark ? '#1a1a1a' : '#fff';
+            document.body.style.color = isDark ? '#e0e0e0' : '#202124';
+            document.querySelector('.sidebar').style.background = isDark ? '#252525' : '#f1f8e9';
+        }
+    </script>
+</body>
+</html>
