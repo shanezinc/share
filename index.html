@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>infinity Dice - 玩家广告压力缓解提案</title>
+    <!-- 阿里巴巴普惠体 3.0 -->
+    <link rel="stylesheet" href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.css">
+    <link rel="stylesheet" href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.css">
+    <link rel="stylesheet" href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.css">
+    <link rel="stylesheet" href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.css">
+    <style>
+        /* ============================================
+           Kakao Design System Tokens
+           ============================================ */
+        :root {
+            /* Brand Colors */
+            --kakao-yellow: #FEE500;
+            --kakao-brown: #3C1E1E;
+            --kakao-black: #191919;
+
+            /* Semantic Colors */
+            --color-error: #F25555;
+            --color-success: #47B881;
+            --color-info: #4A90D9;
+            --color-warning: #F5A623;
+
+            /* Grayscale */
+            --gray-900: #191919;
+            --gray-800: #333333;
+            --gray-700: #4D4D4D;
+            --gray-600: #666666;
+            --gray-500: #999999;
+            --gray-400: #B3B3B3;
+            --gray-300: #CCCCCC;
+            --gray-200: #E0E0E0;
+            --gray-100: #F0F0F0;
+            --gray-50:  #F9F9F9;
+            --white:    #FFFFFF;
+
+            /* Surface / BG */
+            --surface:  #FFFFFF;
+            --bg:       #F6F6F6;
+
+            /* Shadows */
+            --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.10);
+            --shadow-3: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+            /* Motion */
+            --motion-fast:   150ms;
+            --motion-normal: 200ms;
+            --motion-slow:   300ms;
+
+            /* Spacing base */
+            --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
+            --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px; --s12: 48px;
+
+            /* Alias for template */
+            --primary:      var(--kakao-black);
+            --primary-light: var(--gray-700);
+            --text:         var(--gray-900);
+            --text-light:   var(--gray-600);
+            --border:       var(--gray-200);
+            --accent:       var(--kakao-yellow);
+        }
+
+        /* Dark Mode */
+        body.dark {
+            --surface:  #1E1E1E;
+            --bg:       #121212;
+            --white:    #2C2C2C;
+            --text:     #E0E0E0;
+            --text-light: #999999;
+            --border:   #3A3A3A;
+            --gray-50:  #1A1A1A;
+            --gray-100: #2C2C2C;
+            --gray-200: #3A3A3A;
+        }
+
+        /* ============================================
+           Reset & Base
+           ============================================ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Alibaba PuHuiTi 3', 'AlibabaPuHuiTi', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* ============================================
+           Sidebar Navigation
+           ============================================ */
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: var(--s6);
+            background: var(--kakao-yellow);
+            color: var(--kakao-black);
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo {
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: var(--s2);
+            color: var(--kakao-black);
+        }
+
+        .sidebar-logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            margin-top: var(--s1);
+            color: var(--kakao-brown);
+            font-weight: 400;
+        }
+
+        .nav-section {
+            padding: var(--s4) 0 var(--s2);
+        }
+
+        .nav-section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: var(--s1) var(--s5) var(--s2);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--s3);
+            padding: 10px var(--s5);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: background var(--motion-fast) ease-in-out,
+                        color var(--motion-fast) ease-in-out;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--gray-100);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: var(--gray-50);
+            color: var(--text);
+            border-left-color: var(--kakao-yellow);
+            font-weight: 600;
+        }
+
+        /* Dark mode nav overrides */
+        body.dark .nav-section-label {
+            color: #AAAAAA;
+        }
+        body.dark .nav-item {
+            color: #E0E0E0;
+        }
+
+        body.dark .nav-item:hover {
+            background: var(--gray-100);
+            color: #FFFFFF;
+        }
+
+        body.dark .nav-item.active {
+            background: var(--gray-100);
+            color: #FFFFFF;
+            border-left-color: var(--kakao-yellow);
+        }
+
+        /* ============================================
+           Sidebar Logo Footer
+           ============================================ */
+        .sidebar-footer {
+            padding: var(--s4) var(--s5) var(--s5);
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .sidebar-footer img {
+            max-width: 140px;
+            height: auto;
+            display: inline-block;
+        }
+
+        body.dark .sidebar-footer-logo-light { display: none; }
+        body:not(.dark) .sidebar-footer-logo-dark { display: none; }
+
+        /* ============================================
+           Main Content
+           ============================================ */
+        .main { margin-left: 260px; min-height: 100vh; }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px var(--s8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            box-shadow: var(--shadow-1);
+        }
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: var(--s2);
+        }
+
+        .topbar-badge {
+            font-size: 11px;
+            background: var(--kakao-yellow);
+            color: var(--kakao-black);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-weight: 600;
+        }
+
+        .topbar-actions { display: flex; gap: var(--s2); }
+
+        /* Buttons - Kakao Style */
+        .btn {
+            padding: 9px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--gray-100);
+            color: var(--gray-900);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background var(--motion-fast) ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: var(--s1);
+            font-family: inherit;
+        }
+
+        .btn:hover { background: var(--gray-200); }
+
+        .btn-primary {
+            background: var(--kakao-yellow);
+            border-color: var(--kakao-yellow);
+            color: var(--kakao-black);
+            font-weight: 600;
+        }
+
+        .btn-primary:hover { background: #EDD400; border-color: #EDD400; }
+
+        body.dark .btn { background: var(--gray-100); border-color: var(--border); color: var(--text); }
+        body.dark .btn:hover { background: var(--gray-200); }
+
+        .content { padding: var(--s8); max-width: 1000px; margin: 0 auto; }
+
+        /* ============================================
+           Cover
+           ============================================ */
+        .cover {
+            text-align: center;
+            padding: 56px var(--s8);
+            background: var(--kakao-yellow);
+            border-radius: 12px;
+            margin-bottom: var(--s6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .cover::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -30px;
+            width: 240px; height: 240px;
+            border-radius: 50%;
+            background: rgba(60, 30, 30, 0.06);
+        }
+
+        .cover-icon {
+            margin-bottom: var(--s3);
+            position: relative; z-index: 1;
+        }
+
+        .cover-icon img {
+            width: 72px; height: 72px;
+            border-radius: 16px;
+            object-fit: cover;
+            box-shadow: var(--shadow-3);
+        }
+
+        .cover-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--kakao-black);
+            margin-bottom: var(--s1);
+            position: relative; z-index: 1;
+        }
+
+        .cover-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--kakao-brown);
+            margin-bottom: var(--s5);
+            position: relative; z-index: 1;
+        }
+
+        .cover-meta {
+            display: flex;
+            justify-content: center;
+            gap: var(--s5);
+            font-size: 13px;
+            color: var(--kakao-brown);
+            flex-wrap: wrap;
+            position: relative; z-index: 1;
+        }
+
+        .cover-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--s2);
+            background: rgba(255, 255, 255, 0.55);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           Section Cards
+           ============================================ */
+        .section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: var(--s8);
+            margin-bottom: var(--s5);
+            box-shadow: var(--shadow-1);
+            border: 1px solid var(--border);
+            scroll-margin-top: 80px; /* 抵消固定头部高度，避免跳转后标题被遮挡 */
+        }
+
+        .section:hover { box-shadow: var(--shadow-2); }
+
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--s4);
+            margin-bottom: var(--s6);
+            padding-bottom: var(--s5);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-number {
+            width: 44px; height: 44px;
+            background: var(--kakao-yellow);
+            color: var(--kakao-black);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .section-subtitle { font-size: 13px; color: var(--text-light); }
+
+        /* ============================================
+           Issue Card (Error State)
+           ============================================ */
+        .issue-card {
+            background: #FFF4F4;
+            border: 1px solid #FECACA;
+            border-radius: 10px;
+            padding: 18px var(--s6);
+            margin-bottom: var(--s5);
+        }
+
+        body.dark .issue-card {
+            background: #2D1B1B;
+            border-color: #7F1D1D;
+        }
+
+        .issue-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: var(--s2);
+        }
+
+        .issue-list { list-style: none; }
+
+        .issue-list li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .issue-list li::before {
+            content: '⚠️';
+            position: absolute;
+            left: 0; top: 6px;
+            font-size: 11px;
+        }
+
+        /* ============================================
+           Card (Info Block)
+           ============================================ */
+        .card {
+            background: var(--gray-50);
+            border-radius: 10px;
+            padding: 20px var(--s6);
+            margin-bottom: 16px;
+            border: 1px solid var(--gray-200);
+        }
+
+        body.dark .card {
+            background: var(--gray-100);
+            border-color: var(--border);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: var(--s2);
+        }
+
+        body.dark .card-title { color: var(--text); }
+
+        /* ============================================
+           Proposal Label / Sub-proposal
+           ============================================ */
+        .proposal-label {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--s2);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--kakao-black);
+            background: var(--kakao-yellow);
+            padding: 7px 18px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .sub-proposal {
+            background: var(--gray-100);
+            border-left: 4px solid var(--kakao-yellow);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 18px;
+            margin: 16px 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        body.dark .sub-proposal {
+            background: var(--gray-100);
+            color: var(--text);
+        }
+
+        /* ============================================
+           Lists
+           ============================================ */
+        .list { list-style: none; }
+
+        .list li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.65;
+        }
+
+        .list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--gray-600);
+            font-weight: 700;
+        }
+
+        .list.indent { margin-left: 20px; }
+        .list.indent li::before { content: '–'; color: var(--gray-400); }
+
+        /* ============================================
+           Info Blocks
+           ============================================ */
+        .block {
+            background: var(--gray-50);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 12px 0;
+            border: 1px solid var(--gray-200);
+        }
+
+        body.dark .block {
+            background: var(--gray-100);
+            border-color: var(--border);
+        }
+
+        .block-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: var(--s2);
+        }
+
+        body.dark .block-title { color: var(--text); }
+
+        /* Highlight Box - Kakao Yellow */
+        .highlight-box {
+            background: var(--kakao-yellow);
+            color: var(--kakao-black);
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin: 16px 0;
+        }
+
+        .highlight-box-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: var(--s2);
+            color: var(--kakao-black);
+        }
+
+        .highlight-box p { font-size: 14px; color: var(--kakao-brown); line-height: 1.65; }
+        .highlight-box p strong { color: var(--kakao-black); }
+
+        /* ============================================
+           Table
+           ============================================ */
+        .table-wrapper { overflow-x: auto; margin: 12px 0; border-radius: 10px; border: 1px solid var(--border); }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        th, td {
+            padding: 11px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        th {
+            background: var(--gray-50);
+            font-weight: 700;
+            color: var(--gray-800);
+            font-size: 13px;
+        }
+
+        body.dark th { background: var(--gray-100); color: var(--text); }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--gray-50); }
+        body.dark tr:hover td { background: var(--gray-100); }
+
+        /* ============================================
+           Images Grid
+           ============================================ */
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--s4);
+            margin: 16px 0;
+        }
+
+        .img-card {
+            background: var(--surface);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow-1);
+            border: 1px solid var(--border);
+        }
+
+        .img-card img { width: 100%; height: auto; display: block; }
+
+        .img-card figcaption {
+            padding: 9px 12px;
+            font-size: 12px;
+            color: var(--text-light);
+            text-align: center;
+            background: var(--gray-50);
+        }
+
+        body.dark .img-card figcaption { background: var(--gray-100); }
+
+        /* ============================================
+           Compare Grid
+           ============================================ */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--s4);
+            margin: 16px 0;
+        }
+
+        .compare-item {
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .compare-item.before {
+            background: #FFF4F4;
+            border-color: #FECACA;
+        }
+
+        .compare-item.after {
+            background: #F0FDF4;
+            border-color: #86EFAC;
+        }
+
+        body.dark .compare-item.before { background: #2D1B1B; border-color: #7F1D1D; }
+        body.dark .compare-item.after  { background: #14261D; border-color: #166534; }
+
+        .compare-label {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .compare-label.before-label { color: var(--color-error); }
+        .compare-label.after-label  { color: var(--color-success); }
+
+        /* ============================================
+           Steps
+           ============================================ */
+        .steps { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+
+        .step { display: flex; gap: 14px; align-items: flex-start; }
+
+        .step-num {
+            width: 28px; height: 28px;
+            background: var(--kakao-yellow);
+            color: var(--kakao-black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .step-text { font-size: 14px; line-height: 1.65; }
+        .step-text strong { color: var(--kakao-black); font-weight: 700; }
+        body.dark .step-text strong { color: var(--kakao-yellow); }
+
+        /* ============================================
+           Footer
+           ============================================ */
+        .footer {
+            text-align: center;
+            padding: var(--s6);
+            color: var(--text-light);
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+            margin-top: var(--s6);
+        }
+
+        .footer-logo {
+            margin-bottom: var(--s3);
+        }
+
+        .footer-logo img {
+            max-width: 120px;
+            height: auto;
+            display: inline-block;
+        }
+
+        /* ============================================
+           Responsive
+           ============================================ */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: transform var(--motion-normal) ease-in-out; }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+            .content { padding: var(--s4); }
+            .topbar { padding: 12px var(--s4); }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            .sidebar, .topbar { display: none; }
+            .main { margin-left: 0; }
+            .section { box-shadow: none; break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 侧边导航 -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="https://s6z1.com/shane/i/2026/04/08/고불린게임_icon.png" alt="Infinity Dice Logo"/>
+                infinity Dice
+            </div>
+            <div class="sidebar-subtitle">玩家广告压力缓解提案</div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-label">文档目录</div>
+            <a href="#cover" class="nav-item active">
+                <span>📋</span> 封面
+            </a>
+            <a href="#section1" class="nav-item">
+                <span>⚠️</span> 1. 广告次数问题
+            </a>
+            <a href="#section2" class="nav-item">
+                <span>🎟️</span> 2-1. 免广告券购买优化
+            </a>
+            <a href="#section3" class="nav-item">
+                <span>📦</span> 2-2. 每日礼包顺序调整
+            </a>
+            <a href="#section-2-3" class="nav-item">
+                <span>⏱️</span> 2-3. 在线时长奖励变更
+            </a>
+            <a href="#section-2-4" class="nav-item">
+                <span>📅</span> 2-4. 七日签到奖励变更
+            </a>
+            <a href="#section4" class="nav-item">
+                <span>📊</span> 3. 免广告券获取数量汇总
+            </a>
+            <a href="#section5" class="nav-item">
+                <span>📌</span> 4. 开发建议综合汇总
+            </a>
+        </div>
+
+        <!-- 侧边栏底部 Logo -->
+        <div class="sidebar-footer">
+            <img class="sidebar-footer-logo-light"
+                 src="https://s6z1.com/shane/i/2026/2b-kp-logo_light_2.png"
+                 alt="2b&amp;kp Logo - Light">
+            <img class="sidebar-footer-logo-dark"
+                 src="https://s6z1.com/shane/i/2026/2b-kp-logo_dark_2_1.png"
+                 alt="2b&amp;kp Logo - Dark">
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <div class="topbar">
+            <div class="topbar-title">
+                📄 infinity Dice 玩家广告压力缓解提案
+                <span class="topbar-badge">KakaoPay 渠道</span>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn" onclick="toggleDark()">🌓 深色模式</button>
+                <button class="btn btn-primary" onclick="window.print()">🖨️ 打印 / 导出 PDF</button>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- 封面 -->
+            <section id="cover" class="cover">
+                <div class="cover-icon">
+                    <img src="https://s6z1.com/shane/i/2026/04/08/고불린게임_icon.png" alt="游戏图标"/>
+                </div>
+                <h1 class="cover-title">infinity Dice</h1>
+                <p class="cover-subtitle">玩家广告压力缓解提案</p>
+                <div class="cover-meta">
+                    <div class="cover-meta-item"><span>📅</span> 2026年4月</div>
+                    <div class="cover-meta-item"><span>🏢</span> KakaoPay 渠道</div>
+                    <div class="cover-meta-item"><span>💼</span> 2bytes</div>
+                </div>
+            </section>
+
+            <!-- 1. 广告次数问题 -->
+            <section id="section1" class="section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div>
+                        <h2 class="section-title">广告次数问题</h2>
+                        <p class="section-subtitle">现状分析与问题背景</p>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <div class="issue-card-title">⚠️ 核心问题</div>
+                    <ul class="issue-list">
+                        <li>关卡推进过程中，广告观看几乎是必须的，但需要观看的广告次数过多</li>
+                        <li>越到后期，用户流失概率越高，反而导致广告收益下降</li>
+                        <li>用户因广告疲劳提前放弃游戏，形成恶性循环</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <div class="highlight-box-title"><span>💡</span> 解决方向</div>
+                    <p>在不改动现有广告系统的前提下，通过辅助装置<strong>适度减少广告观看次数</strong>，降低用户疲劳感，从而改善留存。</p>
+                </div>
+            </section>
+
+            <!-- 2-1. 免广告券购买优化 -->
+            <section id="section2" class="section">
+                <div class="section-header">
+                    <div class="section-number">2-1</div>
+                    <div>
+                        <h2 class="section-title">修改方向一：免广告券购买窗口优化</h2>
+                        <p class="section-subtitle">提升免广告券的认知度与使用率</p>
+                    </div>
+                </div>
+
+                <div class="sub-proposal">2-1-1. 免广告券认知问题</div>
+
+                <div class="card">
+                    <div class="card-title">🎟️ 免广告券 - 现有机制</div>
+                    <ul class="list">
+                        <li>当前游戏中存在可在关卡中跳过广告的【免广告券】</li>
+                        <li>主界面顶部有购买免广告券的入口</li>
+                        <li>每观看1次广告可随机获得 <strong>2~10张</strong> 免广告券</li>
+                        <li>通过少量广告观看获取大量免广告券，可大幅减少关卡内的广告次数</li>
+                        <li>即：<strong>少看广告换取免广告券 → 关卡中免看大量广告</strong></li>
+                    </ul>
+                </div>
+
+                <div class="issue-card">
+                    <div class="issue-card-title">⚠️ 现存问题</div>
+                    <ul class="issue-list">
+                        <li>用户对免广告券购买的高效性<strong>缺乏认知</strong></li>
+                        <li>现有购买界面的UI完全看不出免广告券的使用价值</li>
+                        <li>导致许多用户不知道免广告券可以大幅减少广告负担</li>
+                    </ul>
+                </div>
+
+                <div class="sub-proposal">2-1-2. 改善方案</div>
+
+                <div class="card">
+                    <div class="card-title">✅ 购买界面优化建议</div>
+                    <ul class="list">
+                        <li>在购买界面中<strong>清晰展示免广告券的数量收益</strong>（例如：「观看1次广告，获得2~10张免广告券，小概率可获得100张」）</li>
+                        <li>对应韩语文案：<strong>2~10장 중 랜덤 획득 (낮은 확률로 100장)</strong></li>
+                        <li>增加说明文案，让用户明白：少看1次广告 = 跳过多次关卡内广告</li>
+                        <li>通过视觉设计强调「收益感」，降低用户的心理门槛</li>
+                    </ul>
+                </div>
+
+                <div class="compare-grid">
+                    <div class="compare-item before">
+                        <div class="compare-label before-label">❌ 现状（改善前）</div>
+                        <ul class="list">
+                            <li>界面无法直观看出效率</li>
+                            <li>用户不了解收益</li>
+                            <li>购买率低</li>
+                        </ul>
+                    </div>
+                    <div class="compare-item after">
+                        <div class="compare-label after-label">✅ 目标（改善后）</div>
+                        <ul class="list">
+                            <li>清晰展示数量收益</li>
+                            <li>用户主动购买意愿提升</li>
+                            <li>广告负担感降低</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="images-grid">
+                    <figure class="img-card">
+                        <img src="https://s6z1.com/shane/i/2026/04/08/설명_전.png" alt="免广告券购买界面 - 改善前" onerror="this.parentElement.style.display='none'">
+                        <figcaption>购买界面 - 改善前（现状）</figcaption>
+                    </figure>
+                    <figure class="img-card">
+                        <img src="https://s6z1.com/shane/i/2026/04/15/설명_후.png" alt="免广告券购买界面 - 改善后" onerror="this.parentElement.style.display='none'">
+                        <figcaption>购买界面 - 改善后（提案）</figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <!-- 2-2. 每日礼包顺序调整 -->
+            <section id="section3" class="section">
+                <div class="section-header">
+                    <div class="section-number">2-2</div>
+                    <div>
+                        <h2 class="section-title">修改方向二：每日礼包中免广告券位置</h2>
+                        <p class="section-subtitle">调整每日礼包中免广告券的位置</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📦 2-2-1. 现有每日礼包机制</div>
+                    <ul class="list">
+                        <li>游戏中存在【每日礼包】，玩家每日可依次领取奖励</li>
+                        <li>目前免广告券在礼包序列中位于<strong>中段位置</strong></li>
+                        <li>导致新用户或轻度用户难以较早获得免广告券</li>
+                        <li>用户无法体验到免广告券的价值，也不会主动去购买</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <div class="highlight-box-title"><span>🔄</span> 2-2-2. 调整目标</div>
+                    <p>将免广告券提前至礼包序列前段，让用户尽早体验其价值，从而<strong>提升后续购买意愿</strong>。</p>
+                </div>
+
+                <div class="sub-proposal">调整内容</div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>调整项目</th>
+                                <th>改善前</th>
+                                <th>改善后</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>首次免费获得奖励</strong></td>
+                                <td>金币</td>
+                                <td>✅ 免广告券</td>
+                            </tr>
+                            <tr>
+                                <td><strong>金币奖励位置</strong></td>
+                                <td>序列前段（首位）</td>
+                                <td>移至原免广告券位置</td>
+                            </tr>
+                            <tr>
+                                <td><strong>金币奖励数量</strong></td>
+                                <td>原有数量</td>
+                                <td>调整为 <strong>400枚</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <div class="step-text">用户进入游戏 → 首次免费礼包奖励改为<strong>免广告券</strong></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <div class="step-text">用户体验到免广告券效果 → 了解其减少广告的价值</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <div class="step-text">用户主动前往购买窗口 → <strong>提升购买率与留存</strong></div>
+                    </div>
+                </div>
+
+                <div class="images-grid">
+                    <figure class="img-card">
+                        <img src="https://s6z1.com/shane/i/2026/04/08/순서_전.png" alt="每日礼包顺序调整" onerror="this.parentElement.style.display='none'">
+                        <figcaption>每日礼包顺序（目前）</figcaption>
+                    </figure>
+                    <figure class="img-card">
+                        <img src="https://s6z1.com/shane/i/2026/04/08/순서_후.png" alt="礼包奖励详情" onerror="this.parentElement.style.display='none'">
+                        <figcaption>每日礼包顺序（调整后）</figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <!-- 2-3. 在线时长奖励构成变更 -->
+            <section id="section-2-3" class="section">
+                <div class="section-header">
+                    <div class="section-number">2-3</div>
+                    <div>
+                        <h2 class="section-title">修改方向三：在线时长奖励构成变更</h2>
+                        <p class="section-subtitle">加入免广告券，提升在线时长与用户留存</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">⏱️ 在线时长奖励 - 现有机制</div>
+                    <ul class="list">
+                        <li>游戏内存在依据在线时长发放奖励的「在线时长奖励」机制，与签到奖励类似</li>
+                        <li>为促进用户连续登录并<strong>延长在线时长</strong>，建议将免广告券纳入奖励构成</li>
+                        <li>同时对奖励顺序进行调整，让用户更早体验到免广告券的价值</li>
+                    </ul>
+                </div>
+
+                <div class="sub-proposal">调整内容</div>
+
+                <div class="compare-grid">
+                    <div class="compare-item before">
+                        <div class="compare-label before-label">❌ 现有构成</div>
+                        <ul class="list">
+                            <li>包含武器碎片奖励（10分钟/60分钟阶段）</li>
+                            <li>不包含免广告券</li>
+                            <li>用户缺乏持续在线的充分动机</li>
+                        </ul>
+                    </div>
+                    <div class="compare-item after">
+                        <div class="compare-label after-label">✅ 变更后构成</div>
+                        <ul class="list">
+                            <li>取消武器碎片奖励，改为免广告券</li>
+                            <li>10分钟奖励：免广告券 ×1（首段即可获得）</li>
+                            <li>40分钟奖励：免广告券 ×2</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>奖励阶段</th>
+                                <th>现有构成</th>
+                                <th>变更后构成</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>10分钟奖励</strong></td>
+                                <td>金币 ×500</td>
+                                <td>✅ 免广告券 ×1</td>
+                            </tr>
+                            <tr>
+                                <td><strong>20分钟奖励</strong></td>
+                                <td>宝石 ×50</td>
+                                <td>金币 ×1,000</td>
+                            </tr>
+                            <tr>
+                                <td><strong>30分钟奖励</strong></td>
+                                <td style="color: var(--color-error);">武器碎片 ×10（移除）</td>
+                                <td>宝石 ×100</td>
+                            </tr>
+                            <tr>
+                                <td><strong>40分钟奖励</strong></td>
+                                <td>金币 ×1,000</td>
+                                <td>✅ 免广告券 ×2</td>
+                            </tr>
+                            <tr>
+                                <td><strong>50分钟奖励</strong></td>
+                                <td>宝石 ×100</td>
+                                <td>金币 ×2,000</td>
+                            </tr>
+                            <tr>
+                                <td><strong>60分钟奖励</strong></td>
+                                <td style="color: var(--color-error);">武器碎片 ×20（移除）</td>
+                                <td>宝石 ×200</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="images-grid">
+                    <figure class="img-card">
+                        <img src="https://s6z1.com/shane/i/2026/04/08/시간_전.png" alt="在线时长奖励界面（当前）" onerror="this.parentElement.style.display='none'">
+                        <figcaption>在线时长奖励界面（当前）</figcaption>
+                    </figure>
+                    <figure class="img-card">
+                        <img src="https://s6z1.com/shane/i/2026/04/15/시간_후.png" alt="在线时长奖励界面（变更后）" onerror="this.parentElement.style.display='none'">
+                        <figcaption>在线时长奖励界面（变更后）</figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <!-- 2-4. 七日签到奖励维持及变更 -->
+            <section id="section-2-4" class="section">
+                <div class="section-header">
+                    <div class="section-number">2-4</div>
+                    <div>
+                        <h2 class="section-title">修改方向四：七日签到奖励维持及变更</h2>
+                        <p class="section-subtitle">将签到系统改为循环制，并在第3、6天加入免广告券</p>
+                    </div>
+                </div>
+
+                <div class="block">
+                    <div class="block-title">📋 背景与问题</div>
+                    <ul class="list">
+                        <li>现有七日签到系统在奖励全部领取后即<strong>消失（一次性）</strong>，无法持续吸引用户回流。</li>
+                        <li>建议将此签到菜单改为<strong>循环重复激活方式</strong>，并对奖励构成进行如下调整。</li>
+                    </ul>
+                </div>
+
+                <div class="images-grid">
+                    <figure class="img-card">
+                        <img src="https://s6z1.com/shane/i/2026/04/15/7일-출석_전.png" alt="7日签到奖励界面（当前）" onerror="this.parentElement.style.display='none'">
+                        <figcaption>7日签到奖励界面（当前）</figcaption>
+                    </figure>
+                    <figure class="img-card">
+                        <img src="https://s6z1.com/shane/i/2026/04/15/7일-출석_후.png" alt="7日签到奖励界面（变更后）" onerror="this.parentElement.style.display='none'">
+                        <figcaption>7日签到奖励界面（变更后）</figcaption>
+                    </figure>
+                </div>
+
+                <div class="block">
+                    <div class="block-title">✏️ 变更说明</div>
+                    <ul class="list">
+                        <li>第3天、第6天加入<strong>免广告券</strong>奖励。</li>
+                        <li>若改为循环重复方式，可根据需要对奖励数量进行进一步调整。</li>
+                    </ul>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>签到日</th>
+                                <th>原有奖励</th>
+                                <th>变更后奖励</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>第1天</td>
+                                <td>金币 500个</td>
+                                <td>金币 500个</td>
+                            </tr>
+                            <tr>
+                                <td>第2天</td>
+                                <td>钻石 100个</td>
+                                <td>钻石 100个</td>
+                            </tr>
+                            <tr style="background:color-mix(in srgb, var(--kakao-yellow) 15%, transparent);">
+                                <td><strong>第3天</strong></td>
+                                <td>金币 1000个</td>
+                                <td><strong>免广告券 1张</strong> ✨</td>
+                            </tr>
+                            <tr>
+                                <td>第4天</td>
+                                <td>钻石 200个</td>
+                                <td>钻石 200个</td>
+                            </tr>
+                            <tr>
+                                <td>第5天</td>
+                                <td>金币 2000个</td>
+                                <td>金币 2000个</td>
+                            </tr>
+                            <tr style="background:color-mix(in srgb, var(--kakao-yellow) 15%, transparent);">
+                                <td><strong>第6天</strong></td>
+                                <td>钻石 300个</td>
+                                <td><strong>免广告券 2张</strong> ✨</td>
+                            </tr>
+                            <tr>
+                                <td>第7天</td>
+                                <td>钻石 500个</td>
+                                <td>钻石 500个</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="highlight-box">
+                    <div class="highlight-box-title"><span>🔔</span> 注意事项</div>
+                    <p>若改为循环重复制，视情况可对奖励数量进行调整，具体数值请提供意见。</p>
+                </div>
+            </section>
+
+            <!-- 3. 免广告券获取数量汇总 -->
+            <section id="section4" class="section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div>
+                        <h2 class="section-title">免广告券获取数量汇总</h2>
+                        <p class="section-subtitle">全部提案方案实施后，每日可获得的免广告券数量</p>
+                    </div>
+                </div>
+
+                <div class="block">
+                    <div class="block-title">📋 前提条件</div>
+                    <ul class="list">
+                        <li>以上所有提案方案（2-1 ～ 2-4）<strong>全部实施</strong>后，每日可获得的免广告券数量如下。</li>
+                        <li>以<strong>7日为一个周期循环</strong>计算（签到奖励以循环制为前提）。</li>
+                    </ul>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>日数</th>
+                                <th>在线10分钟奖励</th>
+                                <th>在线40分钟奖励</th>
+                                <th>每日礼包</th>
+                                <th>7日签到</th>
+                                <th style="background:var(--kakao-yellow); color:#191919;">合计</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>第1天</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td><strong>4</strong></td>
+                            </tr>
+                            <tr>
+                                <td>第2天</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td><strong>4</strong></td>
+                            </tr>
+                            <tr style="background:color-mix(in srgb, var(--kakao-yellow) 15%, transparent);">
+                                <td>第3天</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td><strong>5</strong></td>
+                            </tr>
+                            <tr>
+                                <td>第4天</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td><strong>4</strong></td>
+                            </tr>
+                            <tr>
+                                <td>第5天</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td><strong>4</strong></td>
+                            </tr>
+                            <tr style="background:color-mix(in srgb, var(--kakao-yellow) 15%, transparent);">
+                                <td>第6天</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td><strong>6</strong></td>
+                            </tr>
+                            <tr>
+                                <td>第7天</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td><strong>4</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="block">
+                    <div class="block-title">💡 汇总说明</div>
+                    <ul class="list">
+                        <li>以上数量以<strong>7日为单位循环</strong>重复。</li>
+                        <li>每天游玩 <strong>40分钟以上</strong>时，通常可获得 <strong>4张免广告券</strong>。</li>
+                        <li>第3天（签到+1）、第6天（签到+2）为获取数量较多的日子。</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <div class="highlight-box-title"><span>📝</span> 备注</div>
+                    <p>本提案以<strong>最小化开发工作量</strong>为原则进行设计。若需调整具体获取数量，欢迎提供意见。</p>
+                </div>
+            </section>
+
+            <!-- 4. 开发建议综合汇总 -->
+            <section id="section5" class="section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div>
+                        <h2 class="section-title">开发建议综合汇总</h2>
+                        <p class="section-subtitle">四个方案协同实施，形成完整的广告体验优化闭环</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <p>💡 <strong>核心策略：</strong>同时实施四个方案，<strong>不改动现有广告系统</strong>，开发成本低，预期可降低后期用户流失率，<strong>间接提升整体广告收益</strong>。</p>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>方案</th>
+                                <th>内容</th>
+                                <th>开发量</th>
+                                <th>预期效果</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>方案一</strong></td>
+                                <td>免广告券购买界面UI优化</td>
+                                <td>⭐ 较低</td>
+                                <td>提升免广告券购买率</td>
+                            </tr>
+                            <tr>
+                                <td><strong>方案二</strong></td>
+                                <td>每日礼包顺序调整（首位改为免广告券）</td>
+                                <td>⭐ 较低</td>
+                                <td>提升用户对免广告券的认知与体验</td>
+                            </tr>
+                            <tr>
+                                <td><strong>方案三</strong></td>
+                                <td>在线时长奖励变更（加入免广告券，取消武器碎片）</td>
+                                <td>⭐ 较低</td>
+                                <td>延长在线时长、促进免广告券使用</td>
+                            </tr>
+                    
+                                <td><strong>方案四</strong></td>
+                                <td>七日签到改为循环制 + 第3、6天加入免广告券</td>
+                                <td>⭐ 较低</td>
+                                <td>增加用户每日回流、持续发放免广告券</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 页脚 -->
+            <footer class="footer">
+                <div class="footer-logo">
+                    <img class="sidebar-footer-logo-light"
+                         src="https://s6z1.com/shane/i/2026/2b-kp-logo_light_2.png"
+                         alt="2b&amp;kp Logo - Light">
+                    <img class="sidebar-footer-logo-dark"
+                         src="https://s6z1.com/shane/i/2026/2b-kp-logo_dark_2_1.png"
+                         alt="2b&amp;kp Logo - Dark">
+                </div>
+                <p>infinity Dice - 玩家广告压力缓解提案</p>
+            </footer>
+
+        </div>
+    </main>
+
+    <script>
+        function toggleDark() {
+            document.body.classList.toggle('dark');
+        }
+
+        // Active nav highlight on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                if (scrollY >= section.offsetTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
